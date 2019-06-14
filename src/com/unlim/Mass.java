@@ -8,27 +8,32 @@ public class Mass {
         int[] result = new int[first.length + second.length];
         int i = 0, j = 0, k = 0;
 
-        while (i < first.length && j < second.length)
-            result[k++] = first[i] < second[j] ? first[i++] :  second[j++];
-
-        while (i < first.length)
+        while (i < first.length && j < second.length) {
+            result[k++] = first[i] < second[j] ? first[i++] : second[j++];
+        }
+        while (i < first.length) {
             result[k++] = first[i++];
-
-
-        while (j < second.length)
+        }
+        while (j < second.length) {
             result[k++] = second[j++];
-
+        }
         return result;
     }
 
     public static List<int[]> divide(int[] bigArr) {
         List<int[]> resultList = new ArrayList<>();
         int arrLength = bigArr.length;
-        if      (arrLength < 1000)      resultList.add(bigArr);
-        else if (arrLength < 100_000)   resultList = splitArr(bigArr, 5);
-        else if (arrLength < 500_000)   resultList = splitArr(bigArr, 10);
-        else if (arrLength < 1_000_000) resultList = splitArr(bigArr, 15);
-        else                            resultList = splitArr(bigArr, 20);
+        if (arrLength < 1000) {
+            resultList.add(bigArr);
+        } else if (arrLength < 100_000) {
+            resultList = splitArr(bigArr, 5);
+        } else if (arrLength < 500_000) {
+            resultList = splitArr(bigArr, 10);
+        } else if (arrLength < 1_000_000) {
+            resultList = splitArr(bigArr, 15);
+        } else {
+            resultList = splitArr(bigArr, 20);
+        }
         return resultList;
     }
 
@@ -57,8 +62,6 @@ public class Mass {
         for(int i = 1; i < listOfArr.size(); i++) {
             result = merge(result, listOfArr.get(i));
         }
-
         return result;
     }
-
 }

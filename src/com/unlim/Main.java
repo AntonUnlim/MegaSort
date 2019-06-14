@@ -6,39 +6,29 @@ import java.util.Random;
 
 public class Main {
 
+    private static int randLength;
+
     public static void main(String[] args) {
         Random rand = new Random();
-        int randLength = rand.nextInt(4_000);
+        randLength = rand.nextInt(4_000);
         int[] arr = new int[randLength];
-        StringBuffer logger = new StringBuffer();
+        List<int[]> chunks;
+        List<Sort> threads;
 
         FileIO.clear();
 
-        for(int i = 0; i < randLength; i++) {
-            arr[i] = rand.nextInt(2_000_000);
-        }
+        fillRandomArray(arr);
 
-        // write main array to log
-        FileIO.writeToFile("Main unsorted array\n");
-        for(int i = 0; i < arr.length; i++) {
-            logger.append(arr[i] + " ");
-        }
-        FileIO.writeToFile(logger + "\n");
-        logger.setLength(0);
+        chunks = Mass.divide(arr);
 
-        List<int[]> chunks = Mass.divide(arr);
+        writeArrToFile("Main unsorted array: Size = " + arr.length + ". Chunk amount = " + chunks.size(), arr);
 
+        FileIO.writeToFile("\nUnsorted Chunks\n");
         for(int[] i : chunks) {
-            FileIO.writeToFile("Unsorted Chunks\nChunk #" + chunks.indexOf(i) + "\n");
-            for(int j = 0; j < i.length; j++) {
-                logger.append(i[j] + " ");
-            }
-            FileIO.writeToFile(logger + "\n");
-            logger.setLength(0);
+            writeArrToFile("\nChunk #" + chunks.indexOf(i) + ". Size = " + i.length, i);
         }
-        logger.setLength(0);
 
-        List<Sort> threads = new ArrayList<>();
+        threads = new ArrayList<>();
         for(int[] chunk : chunks) {
             threads.add(new Sort(chunk));
         }
@@ -46,6 +36,7 @@ public class Main {
         for(Thread thread : threads) {
             thread.start();
         }
+
         for(Thread thread : threads) {
             try {
                 thread.join();
@@ -58,24 +49,33 @@ public class Main {
             chunks.set(i, threads.get(i).getSorted());
         }
 
+        FileIO.writeToFile("\nSorted chunks\n");
+
         for(int[] i : chunks) {
-            FileIO.writeToFile("Sorted chunks\nChunk #" + chunks.indexOf(i) + "\n");
-            for(int j = 0; j < i.length; j++) {
-                logger.append(i[j] + " ");
-            }
-            FileIO.writeToFile(logger + "\n");
-            logger.setLength(0);
+            writeArrToFile("\nChunk #" + chunks.indexOf(i), i);
         }
-        logger.setLength(0);
-        logger.append("\n\nResult\n");
+
         arr = Mass.merge(chunks);
 
+        writeArrToFile("\n\nResult", arr);
+    }
 
-        for(int i = 0; i < arr.length; i++) {
-            logger.append(arr[i] + " ");
-        }
-        FileIO.writeToFile(logger + "");
+    private static void writeArrToFile(String message, int[] arr) {
+        StringBuffer logger = new StringBuffer();
         logger.setLength(0);
+        FileIO.writeToFile(message + "\n");
+        for(int i = 0; i < ((arr.length <= 50) ? arr.length : 50); i++) {
+            logger.append(arr[i] + ((i == 49) ? " ..." : " "));
+        }
+        FileIO.writeToFile(logger + "\n");
+        logger.setLength(0);
+    }
+
+    private static void fillRandomArray(int[] arr) {
+        Random rand = new Random();
+        for(int i = 0; i < randLength; i++) {
+            arr[i] = rand.nextInt(1_000);
+        }
     }
 }
 
