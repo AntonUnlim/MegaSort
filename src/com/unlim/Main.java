@@ -14,15 +14,11 @@ public class Main {
         int[] arr = new int[randLength];
         List<int[]> chunks;
         List<Sort> threads;
-
         FileIO.clear();
-
         fillRandomArray(arr);
-
         chunks = Mass.divide(arr);
 
         writeArrToFile("Main unsorted array: Size = " + arr.length + ". Chunk amount = " + chunks.size(), arr);
-
         FileIO.writeToFile("\nUnsorted Chunks\n");
         for(int[] i : chunks) {
             writeArrToFile("\nChunk #" + chunks.indexOf(i) + ". Size = " + i.length, i);
@@ -32,11 +28,9 @@ public class Main {
         for(int[] chunk : chunks) {
             threads.add(new Sort(chunk));
         }
-
         for(Thread thread : threads) {
             thread.start();
         }
-
         for(Thread thread : threads) {
             try {
                 thread.join();
@@ -44,19 +38,19 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
         for(int i = 0; i < chunks.size(); i++) {
-            chunks.set(i, threads.get(i).getSorted());
+            try {
+                chunks.set(i, threads.get(i).call());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         FileIO.writeToFile("\nSorted chunks\n");
-
         for(int[] i : chunks) {
             writeArrToFile("\nChunk #" + chunks.indexOf(i), i);
         }
-
         arr = Mass.merge(chunks);
-
         writeArrToFile("\n\nResult", arr);
     }
 

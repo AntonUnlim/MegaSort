@@ -1,8 +1,9 @@
 package com.unlim;
 
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 
-public class Sort extends Thread {
+public class Sort extends Thread implements Callable<int[]> {
 
     volatile int[] array;
 
@@ -15,7 +16,8 @@ public class Sort extends Thread {
         Arrays.sort(array);
     }
 
-    public int[] getSorted() {
+    @Override
+    public int[] call() throws Exception {
         return array;
     }
 }
