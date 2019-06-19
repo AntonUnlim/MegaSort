@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 public class FileIO {
     private static final String LOG_FILE = "result.txt";
     private static final File file = new File(LOG_FILE);
-    public static void writeToFile(String logString) {
+    public static void writeMsgToLogFile(String logString) {
         try {
             FileWriter fileLog = new FileWriter(file, true);
             fileLog.write(logString);
@@ -18,7 +18,7 @@ public class FileIO {
         }
     }
 
-    public static void clear() {
+    public static void clearLogFile() {
         try {
             PrintWriter clear = new PrintWriter(file);
         } catch (IOException e) {

@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 public class Sort extends Thread implements Callable<int[]> {
 
-    volatile int[] array;
+    int[] array;
 
     public Sort(int[] unsorted) {
         this.array = unsorted;
