@@ -3,7 +3,7 @@ package com.unlim;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mass {
+class Mass {
     private static int[] mergeSortedChunksToArray(int[] firstArray, int[] secondArray) {
         int[] resultArray = new int[firstArray.length + secondArray.length];
         int firstArrIndex = 0, secondArrIndex = 0, resultArrIndex = 0;
@@ -21,7 +21,7 @@ public class Mass {
         return resultArray;
     }
 
-    public static List<int[]> divideArrayToChunks(int[] arrayToDivide) {
+    static List<int[]> divideArrayToChunks(int[] arrayToDivide) {
         List<int[]> resultListOfArrays = new ArrayList<>();
         int arrayLength = arrayToDivide.length;
         if (arrayLength < 1000) {
@@ -55,7 +55,7 @@ public class Mass {
         return resultListOfArrays;
     }
 
-    public static int[] mergeSortedChunksToArray(List<int[]> listOfArrays) {
+    static int[] mergeSortedChunksToArray(List<int[]> listOfArrays) {
         int[] resultArray = listOfArrays.get(0);
 
         for(int i = 1; i < listOfArrays.size(); i++) {

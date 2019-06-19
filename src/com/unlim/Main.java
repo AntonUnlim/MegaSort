@@ -8,7 +8,6 @@ public class Main {
     private static List<int[]> chunks;
     private static List<Sort> threads;
     private static int[] unsortedArray;
-    private static int[] sortedArray;
 
     public static void main(String[] args) {
         unsortedArray = new int[getRandomInt(4_000)];
@@ -24,7 +23,7 @@ public class Main {
         callAllThreads();
         FileIO.writeMsgToLogFile("\nSorted chunks\n");
         writeListToLogFile();
-        sortedArray = Mass.mergeSortedChunksToArray(chunks);
+        unsortedArray = Mass.mergeSortedChunksToArray(chunks);
         writeArrayToLogFile("\n\nResult");
     }
 

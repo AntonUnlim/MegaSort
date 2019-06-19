@@ -5,9 +5,9 @@ import java.util.concurrent.Callable;
 
 public class Sort extends Thread implements Callable<int[]> {
 
-    int[] array;
+    private int[] array;
 
-    public Sort(int[] unsorted) {
+    Sort(int[] unsorted) {
         this.array = unsorted;
     }
 
@@ -17,7 +17,7 @@ public class Sort extends Thread implements Callable<int[]> {
     }
 
     @Override
-    public int[] call() throws Exception {
+    public int[] call() {
         return array;
     }
 }
