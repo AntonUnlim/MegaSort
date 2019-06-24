@@ -5,59 +5,25 @@ import java.util.List;
 import java.util.Random;
 
 public class Main {
-    private static List<int[]> chunks;
-    private static List<Sort> threads;
-    private static int[] unsortedArray;
-
     public static void main(String[] args) {
-        unsortedArray = new int[getRandomInt(4_000)];
-        FileIO.clearLogFile();
-        fillArrayWithRandomInts();
-        chunks = Mass.divideArrayToChunks(unsortedArray);
-        writeArrayToLogFile("Main unsorted array: Size = " + unsortedArray.length + ". Chunk amount = " + chunks.size());
-        FileIO.writeMsgToLogFile("\nUnsorted Chunks\n");
-        writeListToLogFile();
-        addChunksToThreads();
-        startAllThreads();
-        joinAllThreads();
-        callAllThreads();
-        FileIO.writeMsgToLogFile("\nSorted chunks\n");
-        writeListToLogFile();
-        unsortedArray = Mass.mergeSortedChunksToArray(chunks);
-        writeArrayToLogFile("\n\nResult");
+        int[] unsortedArray = fillArrayWithRandomInts();
+        List<int[]> unsortedChunks = Mass.divideArrayToChunks(unsortedArray);
+        List<Sort> threads = new ArrayList<>();
+        addChunksToThreads(unsortedChunks, threads);
+        startAllThreads(threads);
+        List<int[]> sortedChunks = callAllThreads(threads);
+        int[] sortedArray = Mass.mergeSortedChunksToArray(sortedChunks);
     }
 
-    private static void startAllThreads() {
-        for(Thread thread : threads) {
-            thread.start();
-        }
-    }
-
-    private static void addChunksToThreads() {
-        threads = new ArrayList<>();
+    private static void addChunksToThreads(List<int[]> chunks, List<Sort> threads) {
         for(int[] chunk : chunks) {
             threads.add(new Sort(chunk));
         }
     }
 
-    private static void writeListToLogFile() {
-        for(int[] i : chunks) {
-            writeArrayToLogFile("\nChunk #" + chunks.indexOf(i) + ". Size = " + i.length);
-        }
-    }
-
-    private static void callAllThreads() {
-        for(int i = 0; i < chunks.size(); i++) {
-            try {
-                chunks.set(i, threads.get(i).call());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void joinAllThreads() {
+    private static void startAllThreads(List<Sort> threads) {
         for(Thread thread : threads) {
+            thread.start();
             try {
                 thread.join();
             } catch (InterruptedException e) {
@@ -66,23 +32,24 @@ public class Main {
         }
     }
 
-    private static void writeArrayToLogFile(String message) {
-        StringBuilder logger = new StringBuilder();
-        logger.setLength(0);
-        FileIO.writeMsgToLogFile(message + "\n");
-        int amountOfIntsToLogFile = 50;
-        boolean isSmallArray = unsortedArray.length <= amountOfIntsToLogFile;
-        for(int i = 0; i < (isSmallArray ? unsortedArray.length : amountOfIntsToLogFile); i++) {
-            logger.append(unsortedArray[i]).append((i == amountOfIntsToLogFile-1) ? " ..." : " ");
+    private static List<int[]> callAllThreads(List<Sort> threads) {
+        List<int[]> sortedChunks = new ArrayList<>();
+        for(int i = 0; i < threads.size(); i++) {
+            try {
+                sortedChunks.add(threads.get(i).call());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        FileIO.writeMsgToLogFile(logger + "\n");
-        logger.setLength(0);
+        return sortedChunks;
     }
 
-    private static void fillArrayWithRandomInts() {
+    private static int[] fillArrayWithRandomInts() {
+        int[] unsortedArray = new int[getRandomInt(4_000)];
         for(int i = 0; i < unsortedArray.length; i++) {
             unsortedArray[i] = getRandomInt(1_000);
         }
+        return unsortedArray;
     }
 
     private static int getRandomInt(int bound) {
